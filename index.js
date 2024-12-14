@@ -4,7 +4,8 @@ functions.http('vehicleEvacuation', async (req, res) => {
 
     try
     {
-        const plateNumber = req.body.licenseplatenumber;
+        const _plateNumber = req.body.licenseplatenumber;
+        const plateNumber = _plateNumber.split('-').join('')
         
         const payload = {
         "getLastGriraForRechev": 
