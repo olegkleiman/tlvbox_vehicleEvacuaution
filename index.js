@@ -1,12 +1,15 @@
 const functions = require('@google-cloud/functions-framework');
 
 functions.http('vehicleEvacuation', async (req, res) => {
+
     try
     {
+        const plateNumber = req.body.licenseplatenumber;
+        
         const payload = {
         "getLastGriraForRechev": 
             {
-                "misparRechev": 1
+                "misparRechev": plateNumber
             }
         };
 
@@ -17,15 +20,24 @@ functions.http('vehicleEvacuation', async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(payload)
-            });
-        let json = await response.json();
+        });
 
-        console.log("Performed")
-        console.log(json)
-        res.send(json);
+        if( !response.ok ) {
+            const responseBody = await response.json();
+            throw new Error(`${responseBody.error.message}`)
+        } else {
+
+            let json = await response.json();
+
+            // console.log("Performed")
+            // console.log(json)
+            res.send(json);
+        }
     }
     catch(ex)
     {
-        res.send(`Error: {ex.error}`)
+        console.error(ex)
+        res.status(500).send(ex.message);
+
     }
 });
